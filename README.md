@@ -1,6 +1,12 @@
 # Pengu-auto-queue
 fastest way to automatically queue in League of Legends
 
+
+https://github.com/user-attachments/assets/5db17748-d1a7-4a32-b2cc-f0290a90e016
+
+
+
+
 # Requirements
   Pengu Loader
   -> open Pengu folder -> create a new folder -> drop index.js in the new folder -> Done
