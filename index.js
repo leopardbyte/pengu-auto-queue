@@ -142,6 +142,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     async function startMatchmaking() {
         try {
+            if (!scriptEnabled) {
+                return;
+            }
             const response = await fetch("/lol-lobby/v2/lobby/matchmaking/search", {
                 method: "POST"
             });
@@ -180,6 +183,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     // Start attempting to start matchmaking every 5 seconds until successful (need better way to determine wether a game has ended or not)
                     const matchmakingCheckIntervalId = setInterval(async () => {
                         const matchmakingStarted = await startMatchmaking();
+                        if (!scriptEnabled) {
+                            return;
+                        }
                         if (matchmakingStarted) {
                             clearInterval(matchmakingCheckIntervalId);
                         } else {
