@@ -26,6 +26,29 @@ document.addEventListener("DOMContentLoaded", function() {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    function showToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        toast.style.position = 'fixed';
+        toast.style.top = '11.5%';
+        toast.style.right = '0%';
+        toast.style.backgroundColor = '#41FDFE';
+        toast.style.color = '#000000';
+        toast.style.padding = '10px 20px';
+        toast.style.borderRadius = '5px';
+        toast.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+        toast.style.zIndex = '1000';
+
+        setTimeout(() => {
+            toast.style.transition = 'opacity 0.5s';
+            toast.style.opacity = '0';
+            setTimeout(() => document.body.removeChild(toast), 500);
+        }, 3000);
+    }
+
     window.addEventListener("load", async () => {
         let socialContainer = getSocialContainer();
 
@@ -34,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function() {
             socialContainer = getSocialContainer();
         }
 
-        
         if (socialContainer) {
             const dropdown = document.createElement("lol-uikit-framed-dropdown");
             dropdown.id = 'queueDropdown';
@@ -67,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 scriptEnabled = !scriptEnabled;
                 enableScriptCheckbox.toggleAttribute("selected", scriptEnabled);
                 console.log(`Script enabled: ${scriptEnabled}`);
+                showToast(`Auto Queue ${scriptEnabled ? 'enabled' : 'disabled'}`);
             });
 
             const useClientInGameCheckbox = document.createElement("lol-uikit-radio-input-option");
@@ -78,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 useClientInGame = !useClientInGame;
                 useClientInGameCheckbox.toggleAttribute("selected", useClientInGame);
                 console.log(`Use client in game: ${useClientInGame}`);
+                showToast(`use Client ingame (Auto Q idle) ${useClientInGame ? 'enabled' : 'disabled'}`);
             });
 
             checkboxesContainer.appendChild(enableScriptCheckbox);
