@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         } else {
                             console.log("Retrying to start matchmaking...");
                         }
-                    }, checkInterval);
+                    }, 3000);
                 } else {
                     console.log("Matchmaking state not ready yet. Waiting...");
                 }
