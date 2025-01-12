@@ -5,17 +5,11 @@ document.addEventListener("DOMContentLoaded", function() {
     let useClientInGame = false;
 
     const queueMapping = {
-        "Aram": 450,
+        "Swift Play": 480,
         "Draft Pick": 400,
-        "Ranked solo/duo": 420,
-        "Ranked flex": 440,
-        "Quickplay": 490,
-        "Swarm": 1820,
-        "Arena": 1700,
-        "TFT Normal": 2200,
-        "TFT Ranked": 1100,
-        "TFT Double up": 1160,
-        "TFT hyper roll": 1130
+        "Ranked Solo/Duo": 420,
+        "Ranked Flex": 440,
+        "Aram": 450
     };
 
     function getSocialContainer() {
