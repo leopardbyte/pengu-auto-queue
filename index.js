@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     const checkInterval = 5000;
-    let queueId = 450;
+    let queueId = 480;
     let scriptEnabled = true;
     let useClientInGame = false;
 
