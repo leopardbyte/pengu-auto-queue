@@ -1,16 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
     const checkInterval = 5000;
-    let queueId = 480;
+    let queueId = 400;
     let scriptEnabled = true;
     let useClientInGame = false;
-
-    const queueMapping = {
-        "Swift Play": 480,
-        "Draft Pick": 400,
-        "Ranked Solo/Duo": 420,
-        "Ranked Flex": 440,
-        "Aram": 450
-    };
+    let queueList = [];
 
     function getSocialContainer() {
         return document.querySelector("lol-social-roster.roster");
@@ -43,11 +36,32 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 3000);
     }
 
-    window.addEventListener("load", async () => {
+    async function fetchQueueList() {
+        try {
+            const response = await fetch('/lol-game-queues/v1/queues');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const queueData = await response.json();
+            queueList = queueData
+                .filter(q => q.queueAvailability === "Available" && q.isVisible)
+                .map(q => ({
+                    queueId: q.id,
+                    description: q.name
+                }))
+                .sort((a, b) => a.queueId - b.queueId);
+            console.log('Fetched queue list:', queueList);
+        } catch (error) {
+            console.error("Error fetching queue list:", error);
+        }
+    }
+
+    async function initialize() {
+        await fetchQueueList();
         let socialContainer = getSocialContainer();
 
         while (!socialContainer) {
-            await sleep(200); 
+            await sleep(200);
             socialContainer = getSocialContainer();
         }
 
@@ -56,16 +70,16 @@ document.addEventListener("DOMContentLoaded", function() {
             dropdown.id = 'queueDropdown';
             dropdown.setAttribute("label", "Select Queue");
 
-            for (const [name, id] of Object.entries(queueMapping)) {
+            for (const queue of queueList) {
                 const option = document.createElement("lol-uikit-dropdown-option");
                 option.setAttribute("slot", "lol-uikit-dropdown-option");
-                option.setAttribute("value", id);
-                option.textContent = name;
+                option.setAttribute("value", queue.queueId);
+                option.textContent = queue.description;
                 dropdown.appendChild(option);
 
                 option.addEventListener("click", () => {
-                    queueId = id;
-                    console.log(`Selected queue: ${name}, ID: ${queueId}`);
+                    queueId = queue.queueId;
+                    console.log(`Selected queue: ${queue.description}, ID: ${queueId}`);
                 });
             }
 
@@ -105,7 +119,9 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             console.error('Social container not found.');
         }
-    });
+    }
+
+    window.addEventListener("load", initialize);
 
     async function cancelselect() {
         try {
@@ -191,14 +207,14 @@ document.addEventListener("DOMContentLoaded", function() {
             if (useClientInGame) {
                 return;
             }
-            
+
             const gameSessionCheckIntervalId = setInterval(async () => {
                 const matchmakingState = await checkMatchmakingState();
                 if (matchmakingState && matchmakingState.errors.length === 0 && matchmakingState.searchState === "Invalid") {
                     clearInterval(gameSessionCheckIntervalId);
                     await joinLobby();
 
-                    // Start attempting to start matchmaking every 5 seconds until successful (need better way to determine wether a game has ended or not)
+                    // Start attempting to start matchmaking every 5 seconds until successful (need better way to determine whether a game has ended or not)
                     const matchmakingCheckIntervalId = setInterval(async () => {
                         const matchmakingStarted = await startMatchmaking();
                         if (!scriptEnabled) {
