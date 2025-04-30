@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let queueList = [];
 
     function getSocialContainer() {
-        return document.querySelector("lol-social-roster.roster");
+        return document.querySelector(".lol-social-roster.social-ember-fade-in.ember-view");
     }
 
     function sleep(ms) {
